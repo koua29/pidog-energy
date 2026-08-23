@@ -1,0 +1,43 @@
+{
+  "_lisezmoi": [
+    "Configuration de pidog-energy. Tout est modifiable ici, aucun code a toucher.",
+    "Verifier apres modification : python3 energy.py --verifier"
+  ],
+  "batterie": {
+    "tension_vide_v": 6.4,
+    "tension_pleine_v": 8.4,
+    "_tensions_aide": "Pack 2S lithium : 8.4 V a pleine charge, 6.4 V = seuil bas sur (3.2 V/cellule). La conversion tension -> pourcentage est LINEAIRE, donc approximative : une cellule lithium tient un plateau vers 7.4 V puis chute vite. Ajustez ces bornes selon votre pack.",
+    "lectures_par_mesure": 7,
+    "_lectures_aide": "Mediane de N lectures. L'ADC bruite de +/-0.08 V, une lecture seule declencherait de fausses alertes.",
+    "intervalle_s": 60
+  },
+  "charge": {
+    "_aide": "Le materiel n'expose AUCUN signal de charge : on la deduit de la tension. Deux indices : une hausse soutenue, ou une tension de fin de charge.",
+    "hausse_v": 0.04,
+    "fenetre_mesures": 10,
+    "tension_pleine_charge_v": 8.25
+  },
+  "alertes": [
+    {
+      "pourcent": 30,
+      "aboiements": 3
+    },
+    {
+      "pourcent": 20,
+      "aboiements": 4
+    },
+    {
+      "pourcent": 10,
+      "aboiements": 5,
+      "annonce": "Batterie critique. {pourcent} pour cent. Rechargez-moi."
+    }
+  ],
+  "_alertes_aide": "Ajoutez, retirez ou modifiez librement. Chaque palier n'aboie QU'UNE FOIS, jusqu'a ce que la batterie repasse au-dessus de 'rearmement_pourcent'. 'annonce' est optionnel : sans lui, 'annonce_par_defaut' est utilise. Mettre 'aboiements' a 0 pour n'avoir que la voix.",
+  "rearmement_pourcent": 50,
+  "son": "single_bark_1",
+  "intervalle_aboiement_s": 0.6,
+  "volume_pourcent": 100,
+  "annonce_par_defaut": "Energie faible. {pourcent} pour cent.",
+  "_annonce_aide": "Phrase dite par le robot (synthese pico2wave, fr-FR). {pourcent} est remplace par le palier atteint. Mettre a null pour n'avoir que les aboiements.",
+  "voix_langue": "fr-FR"
+}
