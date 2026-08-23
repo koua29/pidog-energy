@@ -75,17 +75,34 @@ def ecrire_etat(etat):
 
 
 # ------------------------------------------------------------- batterie
+# Une lecture sous ce seuil est forcement un parasite : un pack 2S sous 5 V
+# ne ferait pas tourner le Pi, qui serait donc eteint. Constate le 23/08/2026 :
+# l'ADC renvoie des 0.00 V francs quand les servos tirent du courant (2 lectures
+# sur 9). Sans ce filtre, la mediane tombe sur 0 et declenche de FAUSSES alertes
+# « batterie critique » alors que le pack est a 7,4 V.
+TENSION_PLAUSIBLE_MIN = 5.0
+
+
 def tension(n=7):
-    """Mediane de n lectures : l'ADC bruite de +/-0.08 V."""
+    """Mediane des lectures PLAUSIBLES. Renvoie None si l'ADC ne dit rien de sense."""
     from robot_hat.device import get_battery_voltage
-    lues = []
+    lues, parasites = [], 0
     for _ in range(n):
         try:
-            lues.append(get_battery_voltage())
+            v = get_battery_voltage()
+            if v >= TENSION_PLAUSIBLE_MIN:
+                lues.append(v)
+            else:
+                parasites += 1
         except Exception as e:
+            parasites += 1
             journal(f"!! lecture ADC en echec : {type(e).__name__}: {e}")
         time.sleep(0.05)
-    return statistics.median(lues) if lues else None
+    if parasites:
+        journal(f"   ({parasites}/{n} lectures parasites ignorees)")
+    if len(lues) < 2:
+        return None          # trop peu de lectures fiables : on ne conclut pas
+    return statistics.median(lues)
 
 
 def pourcentage(v, cfg):

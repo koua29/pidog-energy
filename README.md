@@ -28,8 +28,14 @@ table peut donc être surveillé sans risque de chute.
 robot-hat. C'est ce qui permet à ce service de tourner *en parallèle* de
 pidog-voice : deux objets `Pidog` dans deux processus se disputeraient le GPIO.
 
-**Il lit la médiane de 7 mesures.** L'ADC bruite de ±0,08 V ; une lecture isolée
-suffirait à déclencher une fausse alerte au passage d'un seuil.
+**Il ne croit pas aveuglément l'ADC.** Deux problèmes distincts, tous deux constatés :
+le convertisseur bruite de ±0,08 V, et — plus vicieux — il renvoie des **0,00 V francs**
+quand les servos tirent du courant (2 lectures sur 9 pendant une marche). Le service
+écarte donc toute lecture sous 5 V *avant* de prendre la médiane : un pack 2S sous 5 V
+n'alimenterait plus le Pi, qui serait éteint.
+
+Sans ce filtre, la médiane tombe sur 0 et le robot annonce « batterie critique, 10 pour
+cent » alors qu'il est à 7,4 V. C'est arrivé, d'où le correctif.
 
 ---
 

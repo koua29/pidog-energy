@@ -7,8 +7,8 @@
     "tension_vide_v": 6.4,
     "tension_pleine_v": 8.4,
     "_tensions_aide": "Pack 2S lithium : 8.4 V a pleine charge, 6.4 V = seuil bas sur (3.2 V/cellule). La conversion tension -> pourcentage est LINEAIRE, donc approximative : une cellule lithium tient un plateau vers 7.4 V puis chute vite. Ajustez ces bornes selon votre pack.",
-    "lectures_par_mesure": 7,
-    "_lectures_aide": "Mediane de N lectures. L'ADC bruite de +/-0.08 V, une lecture seule declencherait de fausses alertes.",
+    "lectures_par_mesure": 9,
+    "_lectures_aide": "Mediane de N lectures PLAUSIBLES (>= 5 V). L'ADC bruite de +/-0.08 V et renvoie parfois des 0.00 V francs quand les servos tirent du courant : sans filtrage, la mediane tombe sur 0 et declenche de fausses alertes critiques.",
     "intervalle_s": 60
   },
   "charge": {
